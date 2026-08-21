@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kepiai — Chill. We've got the metrics.</title>
+<meta name="description" content="Kepiai unifies your performance, content, audience, and campaign data into one intelligent workspace — turning days of reporting into minutes.">
+<link rel="icon" href="assets/capybara-mark.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy:   '#2D2D78',
+          tealdeep: '#04505E',
+          mint:   '#4DBE9E',
+          cyan:   '#3BC2D8',
+          indigo: '#303E99',
+          peri:   '#7A80BE',
+          paper:  '#F7F7FB',
+          ink:    '#14152B',
+        },
+        fontFamily: {
+          sora:   ['Sora', 'sans-serif'],
+          jakarta:['"Plus Jakarta Sans"', 'sans-serif'],
+          mono:   ['"IBM Plex Mono"', 'monospace'],
+        },
+        maxWidth: { 'container': '1240px' },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{
+    --navy:#2D2D78; --tealdeep:#04505E; --mint:#4DBE9E; --cyan:#3BC2D8;
+    --indigo:#303E99; --peri:#7A80BE; --paper:#F7F7FB; --ink:#14152B;
+    --ease-out-expo: cubic-bezier(.16,1,.3,1);
+    --ease-in-out: cubic-bezier(.65,0,.35,1);
+  }
+  *{ -webkit-font-smoothing:antialiased; }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--paper); color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; }
+  h1,h2,h3,.font-display{ font-family:'Sora',sans-serif; letter-spacing:-0.01em; }
+  .font-mono-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:0.08em; text-transform:uppercase; }
+
+  /* ---------- focus ---------- */
+  a:focus-visible, button:focus-visible, summary:focus-visible{
+    outline:2px solid var(--mint); outline-offset:3px; border-radius:2px;
+  }
+  ::selection{ background:var(--mint); color:var(--navy); }
+
+  /* ---------- skip link ---------- */
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--mint); color:var(--navy);
+    padding:10px 16px; font-weight:700; z-index:100; border-radius:0 0 8px 0; }
+  .skip-link:focus{ left:0; }
+
+  /* ---------- grain texture (dark sections only) ---------- */
+  .grain{ position:absolute; inset:0; pointer-events:none; opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* ---------- dark section base ---------- */
+  .dark-surface{
+    background:
+      radial-gradient(1100px 620px at 82% var(--gy,-8%), rgba(77,190,158,0.16), transparent 60%),
+      linear-gradient(155deg, var(--navy) 0%, #1c1c5c 46%, var(--tealdeep) 100%);
+    color:var(--paper); position:relative; overflow:hidden;
+  }
+
+  /* ---------- hero scroll parallax ---------- */
+  #heroCopy{ will-change:transform,opacity; }
+  .hero-parallax-layer{ position:absolute; inset:0; will-change:transform,opacity; }
+  .scroll-cue{ position:absolute; left:50%; bottom:22px; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:9px; opacity:0.8;
+    transition:opacity .4s ease; z-index:4; }
+  .scroll-cue.hide{ opacity:0; }
+  .scroll-cue .line{ position:relative; display:block; width:1px; height:34px; overflow:hidden;
+    background:linear-gradient(to bottom, rgba(247,247,251,0.55), transparent); }
+  .scroll-cue .dot{ position:absolute; left:50%; top:0; width:3px; height:3px; margin-left:-1.5px;
+    border-radius:50%; background:var(--mint); animation:scrollDot 1.9s ease-in-out infinite; }
+  @keyframes scrollDot{ 0%{ top:0%; opacity:0;} 18%{opacity:1;} 82%{opacity:1;} 100%{ top:97%; opacity:0;} }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease-out-expo), transform .7s var(--ease-out-expo); }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  /* ---------- nav ---------- */
+  #nav{ position:fixed; top:0; left:0; right:0; z-index:50; transition:background-color .35s ease, box-shadow .35s ease, border-color .35s ease; }
+  #nav .nav-inner{ transition:padding .35s ease; }
+  #nav.nav-solid{ background:rgba(247,247,251,0.88); backdrop-filter:blur(14px); box-shadow:0 1px 0 rgba(20,21,43,0.08); }
+  #nav a.nav-link{ color:var(--paper); }
+  #nav.nav-solid a.nav-link{ color:var(--ink); }
+  #nav .nav-cta{ border-color:rgba(247,247,251,0.5); color:var(--paper); background:transparent; }
+  #nav .nav-cta:hover{ border-color:var(--paper); background:rgba(247,247,251,0.08); }
+  #nav.nav-solid .nav-cta{ border-color:var(--navy); color:var(--navy); background:transparent; }
+  #nav.nav-solid .nav-cta:hover{ background:var(--navy); color:var(--paper); }
+  #nav .nav-logo-word{ color:var(--paper); }
+  #nav.nav-solid .nav-logo-word{ color:var(--navy); }
+  #nav .nav-link-color{ color:var(--paper); }
+  #nav.nav-solid .nav-link-color{ color:var(--ink); }
+
+  .nav-link{ position:relative; }
+  .nav-link::after{ content:''; position:absolute; left:0; right:100%; bottom:-4px; height:1.5px; background:var(--mint);
+    transition:right .28s var(--ease-out-expo); }
+  .nav-link:hover::after{ right:0; }
+
+  /* ---------- buttons ---------- */
+  .btn{ display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:14px; letter-spacing:0.01em;
+    padding:14px 26px; border-radius:9999px; transition:transform .25s var(--ease-out-expo), background-color .25s ease, border-color .25s ease, box-shadow .25s ease; }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{ background:var(--mint); color:#08281f; }
+  .btn-primary:hover{ background:#5fd1af; box-shadow:0 10px 30px -8px rgba(77,190,158,0.55); }
+  .btn-outline-dark{ border:1.5px solid rgba(247,247,251,0.5); color:var(--paper); }
+  .btn-outline-dark:hover{ border-color:var(--paper); background:rgba(247,247,251,0.08); }
+  .btn-outline-light{ border:1.5px solid var(--navy); color:var(--navy); }
+  .btn-outline-light:hover{ background:var(--navy); color:var(--paper); }
+
+  /* ---------- hero assembly animation ---------- */
+  .hero-stage{ position:relative; aspect-ratio:1/1; }
+  .frag{ position:absolute; will-change:transform,opacity; z-index:2; }
+  .frag-float{ display:block; }
+  .frag-inner{ position:relative; overflow:hidden; background:rgba(247,247,251,0.97); border-radius:14px;
+    box-shadow:0 20px 44px -14px rgba(4,10,30,0.6); padding:13px 16px; }
+  .frag-inner::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:4px; }
+  .frag-edge-peri::before{ background:var(--peri); }
+  .frag-edge-cyan::before{ background:var(--cyan); }
+  .frag-edge-mint::before{ background:var(--mint); }
+  .frag-edge-indigo::before{ background:var(--indigo); }
+
+  /* idle drift while fragments hold — independent of the big convergence move,
+     so the chaos reads as alive rather than four frozen screenshots */
+  @keyframes idleBob{ 0%{ transform:translateY(0) rotate(0deg); } 100%{ transform:translateY(-8px) rotate(1.6deg); } }
+  .frag-float{ animation:idleBob 2.3s ease-in-out infinite alternate; }
+  .frag-float-a{ animation-duration:2.4s; animation-delay:0s; }
+  .frag-float-b{ animation-duration:2.8s; animation-delay:.3s; }
+  .frag-float-c{ animation-duration:2.1s; animation-delay:.15s; }
+  .frag-float-d{ animation-duration:3s;   animation-delay:.45s; }
+  .frag-float-e{ animation-duration:2.35s; animation-delay:.6s; }
+
+  /* bigger scatter on entry, wider sweep on convergence — the "river" is louder now */
+  @keyframes tabsIn{ 0%{opacity:0; transform:translate(-30px,-22px) rotate(-24deg) scale(.82);} 100%{opacity:1; transform:translate(0,0) rotate(-9deg) scale(1);} }
+  @keyframes tabsOut{ 0%{opacity:1; transform:translate(0,0) rotate(-9deg) scale(1);} 100%{opacity:0; transform:translate(230px,155px) rotate(12deg) scale(.4);} }
+  @keyframes sheetIn{ 0%{opacity:0; transform:translate(28px,24px) rotate(20deg) scale(.82);} 100%{opacity:1; transform:translate(0,0) rotate(7deg) scale(1);} }
+  @keyframes sheetOut{ 0%{opacity:1; transform:translate(0,0) rotate(7deg) scale(1);} 100%{opacity:0; transform:translate(-175px,-145px) rotate(-12deg) scale(.4);} }
+  @keyframes igIn{ 0%{opacity:0; transform:translate(28px,-24px) rotate(17deg) scale(.82);} 100%{opacity:1; transform:translate(0,0) rotate(6deg) scale(1);} }
+  @keyframes igOut{ 0%{opacity:1; transform:translate(0,0) rotate(6deg) scale(1);} 100%{opacity:0; transform:translate(-185px,205px) rotate(-9deg) scale(.4);} }
+  @keyframes ttIn{ 0%{opacity:0; transform:translate(-26px,26px) rotate(-18deg) scale(.82);} 100%{opacity:1; transform:translate(0,0) rotate(-7deg) scale(1);} }
+  @keyframes ttOut{ 0%{opacity:1; transform:translate(0,0) rotate(-7deg) scale(1);} 100%{opacity:0; transform:translate(145px,-205px) rotate(10deg) scale(.4);} }
+  @keyframes clockIn{ 0%{opacity:0; transform:translate(-22px,-28px) rotate(-14deg) scale(.78);} 100%{opacity:1; transform:translate(0,0) rotate(-3deg) scale(1);} }
+  @keyframes clockOut{ 0%{opacity:1; transform:translate(0,0) rotate(-3deg) scale(1);} 100%{opacity:0; transform:translate(195px,65px) rotate(7deg) scale(.35);} }
+  @keyframes insightIn{ 0%{opacity:0; transform:translate(-50%,-50%) scale(.8);} 60%{opacity:1; transform:translate(-50%,-50%) scale(1.03);} 100%{opacity:1; transform:translate(-50%,-50%) scale(1);} }
+  @keyframes ringPulse{
+    0%{ box-shadow:0 0 0 0 rgba(77,190,158,0.55), 0 30px 60px -20px rgba(4,10,30,0.65); }
+    70%{ box-shadow:0 0 0 20px rgba(77,190,158,0), 0 30px 60px -20px rgba(4,10,30,0.65); }
+    100%{ box-shadow:0 0 0 20px rgba(77,190,158,0), 0 30px 60px -20px rgba(4,10,30,0.65); }
+  }
+
+  .frag-tabs{ top:5%; left:1%; animation:tabsIn .7s var(--ease-out-expo) .2s both, tabsOut .9s var(--ease-in-out) 2.1s forwards; }
+  .frag-sheet{ bottom:9%; left:-6%; animation:sheetIn .7s var(--ease-out-expo) .35s both, sheetOut .9s var(--ease-in-out) 2.25s forwards; }
+  .frag-ig{ top:2%; right:-1%; animation:igIn .7s var(--ease-out-expo) .5s both, igOut .9s var(--ease-in-out) 2.4s forwards; }
+  .frag-tt{ bottom:5%; right:2%; animation:ttIn .7s var(--ease-out-expo) .65s both, ttOut .9s var(--ease-in-out) 2.55s forwards; }
+  .frag-clock{ top:44%; left:-9%; animation:clockIn .65s var(--ease-out-expo) .8s both, clockOut .9s var(--ease-in-out) 2.7s forwards; }
+
+  .insight-card{ position:absolute; top:50%; left:50%; opacity:0;
+    animation:insightIn .85s var(--ease-out-expo) 2.75s forwards; width:min(288px,74%); z-index:3; }
+  .insight-ring{ box-shadow:0 30px 60px -20px rgba(4,10,30,0.65); animation:ringPulse .9s ease-out 3.55s both; }
+
+  .capy-still{ position:absolute; bottom:2%; right:-2%; width:46%; opacity:0.16; z-index:0; pointer-events:none; }
+
+  @media (prefers-reduced-motion: reduce){
+    .frag, .frag-float, .insight-card, .insight-ring, .reveal{ animation:none !important; transition:none !important; }
+    .frag-tabs, .frag-sheet, .frag-ig, .frag-tt, .frag-clock{ opacity:0; }
+    .insight-card{ opacity:1; transform:translate(-50%,-50%); }
+    .reveal{ opacity:1; transform:none; }
+    #heroCopy, .hero-parallax-layer{ transform:none !important; opacity:1 !important; }
+    .scroll-cue .dot{ animation:none; top:46%; opacity:1; }
+  }
+
+  /* ---------- mini chart (Performance Intelligence) ---------- */
+  .chart-line{ stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset 1.3s var(--ease-out-expo) .15s; }
+  .is-visible .chart-line{ stroke-dashoffset:0; }
+  .bar{ transform:scaleY(0); transform-origin:bottom; transition:transform .7s var(--ease-out-expo); }
+  .is-visible .bar{ transform:scaleY(1); }
+  .bar1{ transition-delay:.05s; } .bar2{ transition-delay:.15s; } .bar3{ transition-delay:.25s; } .bar4{ transition-delay:.35s; } .bar5{ transition-delay:.45s; }
+
+  /* ---------- report mock skeleton ---------- */
+  .skel{ transform:scaleX(0); transform-origin:left; transition:transform .8s var(--ease-out-expo); }
+  .is-visible .skel{ transform:scaleX(1); }
+  .skel1{ transition-delay:.05s; } .skel2{ transition-delay:.18s; } .skel3{ transition-delay:.3s; }
+  .chip-fade{ opacity:0; transform:translateY(8px); transition:opacity .6s ease, transform .6s var(--ease-out-expo); transition-delay:.55s; }
+  .is-visible .chip-fade{ opacity:1; transform:translateY(0); }
+
+  /* ---------- misc ---------- */
+  .hairline{ height:1px; background:linear-gradient(90deg, transparent, rgba(122,128,190,0.5), transparent); }
+  .strike-text{ text-decoration-line:line-through; text-decoration-thickness:1.5px;
+    text-decoration-color:transparent; transition:text-decoration-color .55s var(--ease-out-expo) .3s; }
+  .reveal.is-visible .strike-text{ text-decoration-color:rgba(122,128,190,0.8); }
+  .spotlight{ position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(480px circle at var(--mx,50%) var(--my,20%), rgba(59,194,216,0.10), transparent 60%); }
+
+  .persona-card{ transition:transform .35s var(--ease-out-expo), box-shadow .35s ease, border-color .35s ease; }
+  .persona-card:hover{ transform:translateY(-6px); border-color:rgba(45,45,120,0.28); box-shadow:0 20px 40px -20px rgba(20,21,43,0.25); }
+
+  @media (max-width:767px){
+    .hero-stage{ aspect-ratio:1/1.1; }
+  }
+</style>
+</head>
+<body class="antialiased">
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- ============ NAV ============ -->
+<header id="nav">
+  <div class="nav-inner max-w-container mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2.5" aria-label="Kepiai home">
+      <img src="assets/capybara-mark.png" alt="" class="h-8 w-auto" />
+      <span class="nav-logo-word font-sora font-bold text-lg tracking-tight transition-colors duration-300">kepiai</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-10" aria-label="Primary">
+      <a href="#products" class="nav-link nav-link-color font-medium text-sm transition-colors duration-300">Product</a>
+      <a href="#pricing" class="nav-link nav-link-color font-medium text-sm transition-colors duration-300">Pricing</a>
+      <a href="#about" class="nav-link nav-link-color font-medium text-sm transition-colors duration-300">About Us</a>
+    </nav>
+    <div class="hidden md:block">
+      <a href="#demo" class="nav-cta text-sm font-bold px-5 py-2.5 rounded-full border transition-colors duration-300">Book a Demo</a>
+    </div>
+    <button id="menuBtn" class="md:hidden nav-link-color" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-paper border-t border-peri/20 px-6 py-6 flex flex-col gap-5">
+    <a href="#products" class="text-ink font-semibold">Product</a>
+    <a href="#pricing" class="text-ink font-semibold">Pricing</a>
+    <a href="#about" class="text-ink font-semibold">About Us</a>
+    <a href="#demo" class="btn btn-outline-light justify-center mt-1">Book a Demo</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="dark-surface pt-32 pb-24 md:pt-40 md:pb-32">
+  <div class="grain"></div>
+  <div class="spotlight" id="spotlight"></div>
+  <div class="max-w-container mx-auto px-6 md:px-10 relative grid md:grid-cols-2 gap-16 items-center">
+    <div id="heroCopy">
+      <p class="font-mono-label text-cyan text-[11px] mb-6">Social analytics · made legible</p>
+      <h1 class="font-display font-extrabold text-[42px] leading-[1.06] sm:text-[52px] md:text-[60px] mb-6">
+        Chill.<br>We've got the metrics.
+      </h1>
+      <p class="text-paper/80 text-[16px] md:text-[17px] leading-relaxed max-w-[440px] mb-9">
+        Every platform hands you numbers. Kepiai hands you the reason behind them — performance, content, audience, and campaigns, unified into one workspace that turns days of reporting into minutes.
+      </p>
+      <div class="flex flex-wrap gap-4 mb-6">
+        <a href="#products" class="btn btn-primary">Explore Kepiai
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="#demo" class="btn btn-outline-dark">Book a Demo</a>
+      </div>
+      <p class="font-mono-label text-paper/70 text-[11px]">Less assembling. More understanding.</p>
+    </div>
+
+    <div class="hero-stage" aria-hidden="true">
+      <img src="assets/capybara-mark.png" alt="" class="capy-still" />
+
+      <div class="hero-parallax-layer" id="heroParallaxLayer">
+      <div class="frag frag-tabs">
+        <div class="frag-float frag-float-a">
+          <div class="frag-inner frag-edge-peri flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-peri/60"></span>
+            <span class="w-2 h-2 rounded-full bg-peri/60"></span>
+            <span class="w-2 h-2 rounded-full bg-mint"></span>
+            <span class="font-mono-label text-ink/65 text-[9px] ml-1">14 tabs open</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="frag frag-sheet">
+        <div class="frag-float frag-float-b">
+          <div class="frag-inner frag-edge-cyan">
+            <div class="grid grid-cols-4 gap-[3px]">
+              <div class="w-4 h-4 border border-peri/30"></div><div class="w-4 h-4 border border-peri/30 bg-peri/10"></div>
+              <div class="w-4 h-4 border border-peri/30"></div><div class="w-4 h-4 border border-peri/30"></div>
+              <div class="w-4 h-4 border border-peri/30"></div><div class="w-4 h-4 border border-peri/30"></div>
+              <div class="w-4 h-4 border border-peri/30 bg-mint/20"></div><div class="w-4 h-4 border border-peri/30"></div>
+            </div>
+            <p class="font-mono-label text-ink/65 text-[9px] mt-1.5">Column F</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="frag frag-ig">
+        <div class="frag-float frag-float-c">
+          <div class="frag-inner frag-edge-mint">
+            <p class="font-mono-label text-ink/70 text-[9px] mb-1">Reel · reach</p>
+            <p class="font-sora font-bold text-navy text-lg leading-none">+212%</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="frag frag-tt">
+        <div class="frag-float frag-float-d">
+          <div class="frag-inner frag-edge-indigo flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--navy)"><polygon points="6,4 20,12 6,20"/></svg>
+            <p class="font-mono-label text-ink/65 text-[9px]">metrics.csv</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="frag frag-clock">
+        <div class="frag-float frag-float-e">
+          <div class="frag-inner frag-edge-peri flex items-center gap-2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2D2D78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+            <span class="font-mono-label text-ink/65 text-[9px]">2:14 AM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-ring bg-paper rounded-2xl p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2 h-2 rounded-full bg-mint"></span>
+            <p class="font-mono-label text-navy/75 text-[10px]">Kepiai Insight</p>
+          </div>
+          <p class="font-sora font-semibold text-ink text-[15px] leading-snug">Your report is ready to review.</p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue" id="scrollCue" aria-hidden="true">
+    <span class="font-mono-label text-paper/55 text-[9px]">Scroll</span>
+    <span class="line"><span class="dot"></span></span>
+  </div>
+</section>
+
+<!-- ============ WHAT THIS REPLACES ============ -->
+<section class="bg-paper py-20 md:py-24 border-b border-peri/15">
+  <div class="max-w-container mx-auto px-6 md:px-10">
+    <p class="font-mono-label text-indigo text-[11px] mb-10 reveal">What Kepiai replaces</p>
+    <div class="grid md:grid-cols-2 gap-x-16 gap-y-6">
+      <div class="reveal flex items-start gap-4 py-4 border-b border-peri/15">
+        <span class="font-mono-label text-indigo text-[11px] pt-1">01</span>
+        <p class="text-ink/55 text-[17px] md:text-[19px] font-sora"><span class="strike-text">Instagram Insights, exported to CSV.</span></p>
+      </div>
+      <div class="reveal flex items-start gap-4 py-4 border-b border-peri/15">
+        <span class="font-mono-label text-indigo text-[11px] pt-1">02</span>
+        <p class="text-ink/55 text-[17px] md:text-[19px] font-sora"><span class="strike-text">TikTok metrics, pasted into column F.</span></p>
+      </div>
+      <div class="reveal flex items-start gap-4 py-4 border-b border-peri/15">
+        <span class="font-mono-label text-indigo text-[11px] pt-1">03</span>
+        <p class="text-ink/55 text-[17px] md:text-[19px] font-sora"><span class="strike-text">A spreadsheet held together by formulas nobody remembers writing.</span></p>
+      </div>
+      <div class="reveal flex items-start gap-4 py-4 border-b border-peri/15">
+        <span class="font-mono-label text-indigo text-[11px] pt-1">04</span>
+        <p class="text-ink/55 text-[17px] md:text-[19px] font-sora"><span class="strike-text">Sunday afternoons assembling a deck instead of planning the quarter.</span></p>
+      </div>
+    </div>
+    <p class="reveal font-display font-bold text-navy text-2xl md:text-3xl mt-12">One workspace. Every answer already in it.</p>
+  </div>
+</section>
+
+<!-- ============ PRODUCTS ============ -->
+<section id="products" class="bg-paper py-24 md:py-32">
+  <div class="max-w-container mx-auto px-6 md:px-10">
+    <div class="max-w-2xl mb-20 md:mb-24">
+      <p class="font-mono-label text-indigo text-[11px] mb-5 reveal">The workspace</p>
+      <h2 class="reveal font-display font-extrabold text-navy text-[34px] md:text-[44px] leading-[1.1] mb-5">You have the insights. Now make them count.</h2>
+      <p class="reveal text-ink/65 text-[16px] md:text-[17px] leading-relaxed">We've transformed your metrics into clear insights and actionable reports. All that's left is turning them into your next confident move.</p>
+    </div>
+
+    <!-- Product 01 -->
+    <div class="grid md:grid-cols-2 gap-14 items-center mb-6">
+      <div class="reveal order-2 md:order-1">
+        <div class="border border-peri/20 rounded-2xl p-6 md:p-8 bg-white chart-wrap">
+          <div class="flex items-center justify-between mb-6">
+            <p class="font-mono-label text-ink/70 text-[10px]">Performance overview</p>
+            <p class="font-mono-label text-indigo text-[10px]">Illustrative view</p>
+          </div>
+          <svg viewBox="0 0 300 100" class="w-full h-28 mb-6">
+            <defs>
+              <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3BC2D8"/><stop offset="100%" stop-color="#4DBE9E"/>
+              </linearGradient>
+            </defs>
+            <polyline class="chart-line" pathLength="1" points="0,78 55,64 110,68 165,38 220,44 300,14"
+              fill="none" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="grid grid-cols-3 gap-4">
+            <div><p class="font-sora font-bold text-navy text-xl count-up" data-target="92">0</p><p class="font-mono-label text-ink/70 text-[9px] mt-1">Engagement score</p></div>
+            <div><p class="font-sora font-bold text-navy text-xl"><span class="count-up" data-target="6">0</span></p><p class="font-mono-label text-ink/70 text-[9px] mt-1">Content pillars</p></div>
+            <div><p class="font-sora font-bold text-navy text-xl">+<span class="count-up" data-target="18">0</span>%</p><p class="font-mono-label text-ink/70 text-[9px] mt-1">Retention lift</p></div>
+          </div>
+          <div class="flex items-end gap-2 h-10 mt-6">
+            <div class="bar bar1 w-full bg-peri/40 rounded-sm" style="height:40%"></div>
+            <div class="bar bar2 w-full bg-peri/40 rounded-sm" style="height:65%"></div>
+            <div class="bar bar3 w-full bg-cyan/70 rounded-sm" style="height:50%"></div>
+            <div class="bar bar4 w-full bg-mint rounded-sm" style="height:90%"></div>
+            <div class="bar bar5 w-full bg-peri/40 rounded-sm" style="height:30%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal order-1 md:order-2">
+        <p class="font-mono-label text-indigo text-[11px] mb-4">01 — Performance Intelligence</p>
+        <h3 class="font-display font-bold text-ink text-2xl md:text-[28px] mb-4 leading-snug">Know what happened. Understand why. Decide what comes next.</h3>
+        <p class="text-ink/65 leading-relaxed mb-6">Connect your channel, content, audience, campaign, and community performance in one intelligent view — moving beyond surface-level metrics to what's actually driving results.</p>
+        <ul class="space-y-2.5 mb-7">
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-mint"></span>Unified channel performance</li>
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-mint"></span>Content intelligence</li>
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-mint"></span>Audience insights</li>
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-mint"></span>Campaign &amp; community analysis</li>
+        </ul>
+        <a href="#" class="inline-flex items-center gap-2 font-bold text-indigo text-sm nav-link">Explore Performance Intelligence
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- connector -->
+    <div class="flex items-center gap-4 my-10 md:my-14 max-w-2xl mx-auto reveal">
+      <div class="hairline flex-1"></div>
+      <p class="font-mono-label text-ink/70 text-[10px] text-center px-2">Performance Intelligence finds the meaning.<br>Report Generator makes it ready to share.</p>
+      <div class="hairline flex-1"></div>
+    </div>
+
+    <!-- Product 02 -->
+    <div class="grid md:grid-cols-2 gap-14 items-center">
+      <div class="reveal">
+        <p class="font-mono-label text-indigo text-[11px] mb-4">02 — Report Generator</p>
+        <h3 class="font-display font-bold text-ink text-2xl md:text-[28px] mb-4 leading-snug">Turn performance data into a story people can understand and act on.</h3>
+        <p class="text-ink/65 leading-relaxed mb-6">Transform complex data into structured, editable, presentation-ready reports — automated generation, analyst interpretation, or deeper strategic consultancy.</p>
+        <ul class="space-y-2.5 mb-7">
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-cyan"></span>Automated reporting</li>
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-cyan"></span>Custom brand templates</li>
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-cyan"></span>Analyst interpretation</li>
+          <li class="flex items-center gap-2.5 text-[14px] text-ink/75"><span class="w-1.5 h-1.5 rounded-full bg-cyan"></span>Key findings &amp; recommendations</li>
+        </ul>
+        <a href="#" class="inline-flex items-center gap-2 font-bold text-indigo text-sm nav-link">Explore Report Generator
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="reveal">
+        <div class="border border-peri/20 rounded-2xl p-6 md:p-8 bg-white chart-wrap">
+          <div class="flex items-center justify-between mb-6">
+            <p class="font-mono-label text-ink/70 text-[10px]">Draft report</p>
+            <p class="font-mono-label text-indigo text-[10px]">Illustrative view</p>
+          </div>
+          <div class="h-3 rounded-full bg-navy/80 skel skel1 w-full mb-3"></div>
+          <div class="h-2 rounded-full bg-peri/30 skel skel2 w-full mb-2"></div>
+          <div class="h-2 rounded-full bg-peri/30 skel skel3 w-[80%] mb-6"></div>
+          <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="h-14 rounded-lg bg-paper border border-peri/20"></div>
+            <div class="h-14 rounded-lg bg-paper border border-peri/20"></div>
+            <div class="h-14 rounded-lg bg-paper border border-peri/20"></div>
+          </div>
+          <div class="chip-fade inline-flex items-center gap-2 bg-mint/15 text-navy font-mono-label text-[10px] px-3 py-2 rounded-full">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2D2D78" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Exported to .pptx, on brand
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal text-center mt-20 md:mt-24">
+      <p class="text-ink/60 mb-3">Not sure which combination is right for you?</p>
+      <a href="#quiz" class="btn btn-outline-light">Find Your Kepi Match</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHO IT'S FOR ============ -->
+<section id="about" class="bg-white py-24 md:py-28 border-y border-peri/15">
+  <div class="max-w-container mx-auto px-6 md:px-10">
+    <p class="font-mono-label text-indigo text-[11px] mb-5 reveal">Not just us</p>
+    <h2 class="reveal font-display font-extrabold text-navy text-[30px] md:text-[38px] leading-[1.15] mb-16 max-w-xl">Different scale. Identical problem.</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="persona-card reveal border border-peri/20 rounded-2xl p-7 bg-paper">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2D2D78" stroke-width="1.6" class="mb-6"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M4 9h16M9 20v-6h6v6"/></svg>
+        <p class="font-mono-label text-indigo text-[10px] mb-2">The UMKM Owner</p>
+        <p class="text-ink/70 text-[14px] leading-relaxed">Closing her shop in Bandung, opening her phone to figure out why last week's Reel outperformed a month of posts — no analyst to ask, no idea which number matters.</p>
+      </div>
+      <div class="persona-card reveal border border-peri/20 rounded-2xl p-7 bg-paper">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2D2D78" stroke-width="1.6" class="mb-6"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="10" y1="19" x2="14" y2="19"/></svg>
+        <p class="font-mono-label text-indigo text-[10px] mb-2">The Solo Founder</p>
+        <p class="text-ink/70 text-[14px] leading-relaxed">Running the brand's Instagram between operations and inventory, guessing at posting times because guessing is faster than learning an enterprise dashboard.</p>
+      </div>
+      <div class="persona-card reveal border border-peri/20 rounded-2xl p-7 bg-paper">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2D2D78" stroke-width="1.6" class="mb-6"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg>
+        <p class="font-mono-label text-indigo text-[10px] mb-2">The Brand Manager</p>
+        <p class="text-ink/70 text-[14px] leading-relaxed">A small team, a large portfolio — spending Sunday assembling a deck instead of planning the quarter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUIZ INVITE ============ -->
+<section id="quiz" class="dark-surface py-28 md:py-36 text-center">
+  <div class="grain"></div>
+  <div class="max-w-2xl mx-auto px-6 relative">
+    <p class="reveal font-mono-label text-cyan text-[11px] mb-6">Find your kepi match</p>
+    <h2 class="reveal font-display font-extrabold text-[32px] md:text-[42px] leading-[1.15] mb-6">Tell us how your team works.</h2>
+    <p class="reveal text-paper/75 text-[16px] leading-relaxed mb-10 max-w-md mx-auto">Answer a few quick questions about your channels, reporting routine, and challenges — we'll match you with the right combination.</p>
+    <a href="#" class="reveal btn btn-primary">Start the Quiz</a>
+    <p class="reveal font-mono-label text-paper/70 text-[11px] mt-6">About three minutes. No spreadsheets required.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer id="demo" class="bg-white pt-20 pb-10 border-t border-peri/15">
+  <div class="max-w-container mx-auto px-6 md:px-10">
+    <div class="grid md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-12 mb-16">
+      <div>
+        <div class="flex items-center gap-2.5 mb-4">
+          <img src="assets/capybara-mark.png" alt="" class="h-7 w-auto"/>
+          <span class="font-sora font-bold text-navy text-lg">kepiai</span>
+        </div>
+        <p class="text-ink/70 text-[14px] leading-relaxed max-w-[240px]">Chill. We've got the metrics.</p>
+      </div>
+      <div>
+        <p class="font-mono-label text-ink/70 text-[10px] mb-4">Product</p>
+        <ul class="space-y-3 text-[14px] text-ink/70">
+          <li><a href="#products" class="hover:text-indigo transition-colors">Performance Intelligence</a></li>
+          <li><a href="#products" class="hover:text-indigo transition-colors">Report Generator</a></li>
+          <li><a href="#pricing" class="hover:text-indigo transition-colors">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono-label text-ink/70 text-[10px] mb-4">Company</p>
+        <ul class="space-y-3 text-[14px] text-ink/70">
+          <li><a href="#about" class="hover:text-indigo transition-colors">About Us</a></li>
+          <li><a href="#about" class="hover:text-indigo transition-colors">Our Story</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono-label text-ink/70 text-[10px] mb-4">Get started</p>
+        <ul class="space-y-3 text-[14px] text-ink/70">
+          <li><a href="#quiz" class="hover:text-indigo transition-colors">Find Your Kepi Match</a></li>
+          <li><a href="#" class="hover:text-indigo transition-colors">Book a Demo</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="hairline mb-8"></div>
+    <div class="flex flex-col sm:flex-row justify-between gap-3 text-ink/70 text-[12px]">
+      <p>© 2026 Kepiai. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- Nav solid on scroll ----
+  const nav = document.getElementById('nav');
+  const onScroll = () => {
+    if (window.scrollY > 60) nav.classList.add('nav-solid');
+    else nav.classList.remove('nav-solid');
+  };
+  document.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  // ---- Mobile menu ----
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    const isHidden = mobileMenu.classList.toggle('hidden');
+    menuBtn.setAttribute('aria-expanded', String(!isHidden));
+  });
+
+  // ---- Scroll reveals ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = (i % 4) * 60 + 'ms';
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.15 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // ---- Chart / bar / skeleton triggers ----
+  const chartWraps = document.querySelectorAll('.chart-wrap');
+  const chartObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        chartObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.3 });
+  chartWraps.forEach(el => chartObserver.observe(el));
+
+  // ---- Count-up numbers ----
+  const countEls = document.querySelectorAll('.count-up');
+  const countObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.target, 10);
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) { el.textContent = target; countObserver.unobserve(el); return; }
+        const dur = 900; const start = performance.now();
+        const tick = (now) => {
+          const p = Math.min(1, (now - start) / dur);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(eased * target);
+          if (p < 1) requestAnimationFrame(tick); else el.textContent = target;
+        };
+        requestAnimationFrame(tick);
+        countObserver.unobserve(el);
+      }
+    });
+  }, { threshold:0.4 });
+  countEls.forEach(el => countObserver.observe(el));
+
+  // ---- Subtle cursor spotlight (desktop, fine pointer only) ----
+  const spotlight = document.getElementById('spotlight');
+  const heroSection = spotlight ? spotlight.closest('section') : null;
+  const canHover = window.matchMedia('(pointer:fine)').matches;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (spotlight && heroSection && canHover && !reducedMotion) {
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const mx = ((e.clientX - rect.left) / rect.width) * 100;
+      const my = ((e.clientY - rect.top) / rect.height) * 100;
+      spotlight.style.setProperty('--mx', mx + '%');
+      spotlight.style.setProperty('--my', my + '%');
+    }, { passive:true });
+  }
+
+  // ---- Hero scroll parallax ----
+  // The fragments + insight card drift away as you scroll (the "river").
+  // The capybara mark is a sibling outside this layer, so it never receives
+  // the transform — it holds its position while everything else moves past it.
+  const heroCopy = document.getElementById('heroCopy');
+  const heroParallaxLayer = document.getElementById('heroParallaxLayer');
+  const scrollCue = document.getElementById('scrollCue');
+
+  if (heroSection && !reducedMotion) {
+    let ticking = false;
+    const updateHeroParallax = () => {
+      const rect = heroSection.getBoundingClientRect();
+      const heroHeight = heroSection.offsetHeight || 1;
+      const scrolled = Math.min(Math.max(-rect.top, 0), heroHeight);
+      const progress = scrolled / heroHeight;
+
+      if (heroCopy) {
+        heroCopy.style.transform = `translateY(${progress * -46}px)`;
+        heroCopy.style.opacity = String(Math.max(1 - progress * 0.85, 0));
+      }
+      if (heroParallaxLayer) {
+        heroParallaxLayer.style.transform = `translateY(${progress * -92}px) scale(${1 - progress * 0.05})`;
+        heroParallaxLayer.style.opacity = String(Math.max(1 - progress * 0.75, 0));
+      }
+      heroSection.style.setProperty('--gy', `${-8 + progress * 44}%`);
+      if (scrollCue) scrollCue.classList.toggle('hide', progress > 0.08);
+
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(updateHeroParallax); ticking = true; }
+    }, { passive:true });
+    updateHeroParallax();
+  } else if (scrollCue) {
+    // reduced motion: keep the cue visible and static, just skip the drift entirely
+    scrollCue.style.opacity = '0.6';
+  }
+</script>
+</body>
+</html>
