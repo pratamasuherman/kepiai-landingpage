@@ -4,6 +4,7 @@ import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 function subscribeScroll(callback: () => void) {
   if (typeof window === "undefined") return () => {};
@@ -104,18 +105,15 @@ export function Nav() {
           ))}
         </nav>
 
-        {/* Desktop CTA with explicit dual-state styling */}
+        {/* Desktop CTA with Button component */}
         <div className="hidden md:block">
-          <Link
+          <Button
             href="#demo"
-            className={`nav-cta inline-flex items-center justify-center font-bold text-sm tracking-[0.01em] px-5 py-2.5 rounded-full border transition-[background-color,border-color,color] duration-250 active:scale-[0.97] ${
-              isSolid
-                ? "border-navy text-navy hover:bg-navy hover:text-paper"
-                : "border-paper/50 text-paper hover:border-paper hover:bg-paper/[0.08]"
-            }`}
+            variant={isSolid ? "outline-light" : "outline-dark"}
+            className="!py-2.5 !px-5 text-sm !font-bold"
           >
             Book a Demo
-          </Link>
+          </Button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -174,13 +172,14 @@ export function Nav() {
               {link.label}
             </Link>
           ))}
-          <Link
+          <Button
             href="#demo"
-            className="inline-flex items-center justify-center font-bold text-sm tracking-[0.01em] px-5 py-2.5 rounded-full border border-navy text-navy hover:bg-navy hover:text-paper transition-[background-color,border-color,color] duration-250 w-full mt-2"
+            variant="outline-light"
+            className="w-full justify-center mt-2"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Book a Demo
-          </Link>
+          </Button>
         </div>
       )}
     </header>

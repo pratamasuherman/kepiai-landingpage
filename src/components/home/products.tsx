@@ -43,8 +43,8 @@ function PerformanceChartVisual() {
       <svg viewBox="0 0 300 100" className="w-full h-28 mb-6 overflow-visible">
         <defs>
           <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#3BC2D8" />
-            <stop offset="100%" stopColor="#4DBE9E" />
+            <stop offset="0%" stopColor="var(--cyan, #3BC2D8)" className="text-cyan" />
+            <stop offset="100%" stopColor="var(--mint, #4DBE9E)" className="text-mint" />
           </linearGradient>
         </defs>
         <motion.polyline
@@ -162,10 +162,11 @@ function ReportMockVisual() {
           height="12"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#2D2D78"
+          stroke="currentColor"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
+          className="text-navy"
           aria-hidden="true"
         >
           <polyline points="20 6 9 17 4 12" />

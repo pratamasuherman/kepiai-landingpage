@@ -26,11 +26,21 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kepiai — Chill. We've got the metrics.",
+  metadataBase: new URL("https://kepiai.com"),
+  title: {
+    default: "Kepiai — Chill. We've got the metrics.",
+    template: "%s | Kepiai",
+  },
   description:
     "Kepiai unifies your performance, content, audience, and campaign data into one intelligent workspace — turning days of reporting into minutes.",
   icons: {
     icon: "/capybara-mark.png",
+    apple: "/capybara-mark.png",
+  },
+  openGraph: {
+    siteName: "Kepiai",
+    type: "website",
+    locale: "id_ID",
   },
 };
 

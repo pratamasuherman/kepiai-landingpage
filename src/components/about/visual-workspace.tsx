@@ -63,10 +63,11 @@ export function VisualWorkspace() {
               height="14"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#2D2D78"
+              stroke="currentColor"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
+              className="text-navy"
               aria-hidden="true"
             >
               <polyline points="20 6 9 17 4 12" />

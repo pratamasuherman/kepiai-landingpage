@@ -9,11 +9,11 @@ export function WhoItsFor() {
           height="28"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#2D2D78"
+          stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="mb-6"
+          className="text-navy mb-6"
           aria-hidden="true"
         >
           <path d="M3 9l1-5h16l1 5M4 9v11h16V9M4 9h16M9 20v-6h6v6" />
@@ -30,11 +30,11 @@ export function WhoItsFor() {
           height="28"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#2D2D78"
+          stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="mb-6"
+          className="text-navy mb-6"
           aria-hidden="true"
         >
           <rect x="6" y="2" width="12" height="20" rx="2" />
@@ -52,11 +52,11 @@ export function WhoItsFor() {
           height="28"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#2D2D78"
+          stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="mb-6"
+          className="text-navy mb-6"
           aria-hidden="true"
         >
           <path d="M3 3v18h18M7 15l4-5 3 3 5-7" />
