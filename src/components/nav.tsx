@@ -1,19 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useScroll, useMotionValueEvent } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
+
+function subscribeScroll(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("scroll", callback, { passive: true });
+  return () => window.removeEventListener("scroll", callback);
+}
+
+function getScrollSnapshot() {
+  if (typeof window === "undefined") return false;
+  return window.scrollY > 60;
+}
+
+function getScrollServerSnapshot() {
+  return false;
+}
 
 export function Nav() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { scrollY } = useScroll();
+  const isScrolled = useSyncExternalStore(
+    subscribeScroll,
+    getScrollSnapshot,
+    getScrollServerSnapshot
+  );
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolled(latest > 60);
-  });
+  // /pricing is an all-light page from top to bottom (per AGENTS.md), so it starts solid
+  const isLightRoute = pathname === "/pricing";
+  const isSolid = isScrolled || isLightRoute;
 
   // Close mobile menu on Escape key
   useEffect(() => {
@@ -36,12 +54,12 @@ export function Nav() {
     <header
       id="nav"
       className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color] duration-350 ${
-        isScrolled
-          ? "bg-paper/90 backdrop-blur-[14px] shadow-[0_1px_0_rgba(20,21,43,0.08)] border-b border-peri/15"
+        isSolid
+          ? "nav-solid bg-paper/90 backdrop-blur-[14px] shadow-[0_1px_0_rgba(20,21,43,0.08)] border-b border-peri/15"
           : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="max-w-container mx-auto px-6 md:px-10 py-5 flex items-center justify-between transition-[padding] duration-350">
+      <div className="nav-inner max-w-container mx-auto px-6 md:px-10 py-5 flex items-center justify-between transition-[padding] duration-350">
         {/* Logo */}
         <Link
           href="/"
@@ -57,8 +75,8 @@ export function Nav() {
             priority
           />
           <span
-            className={`font-sora font-bold text-lg tracking-tight transition-colors duration-300 ${
-              isScrolled ? "text-navy" : "text-paper"
+            className={`nav-logo-word font-sora font-bold text-lg tracking-tight transition-colors duration-300 ${
+              isSolid ? "text-navy" : "text-paper"
             }`}
           >
             kepiai
@@ -71,8 +89,10 @@ export function Nav() {
             <Link
               key={link.label}
               href={link.href}
-              className={`relative font-medium text-sm transition-colors duration-300 group py-1 ${
-                isScrolled ? "text-ink hover:text-navy" : "text-paper hover:text-paper"
+              className={`nav-link relative font-medium text-sm transition-colors duration-300 group py-1 ${
+                isSolid
+                  ? "text-ink hover:text-navy"
+                  : "text-paper hover:text-paper"
               }`}
             >
               {link.label}
@@ -84,22 +104,27 @@ export function Nav() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
+        {/* Desktop CTA with explicit dual-state styling */}
         <div className="hidden md:block">
-          <Button
+          <Link
             href="#demo"
-            variant={isScrolled ? "outline-light" : "outline-dark"}
-            className="!py-2.5 !px-5 text-sm !font-bold"
+            className={`nav-cta inline-flex items-center justify-center font-bold text-sm tracking-[0.01em] px-5 py-2.5 rounded-full border transition-[background-color,border-color,color] duration-250 active:scale-[0.97] ${
+              isSolid
+                ? "border-navy text-navy hover:bg-navy hover:text-paper"
+                : "border-paper/50 text-paper hover:border-paper hover:bg-paper/[0.08]"
+            }`}
           >
             Book a Demo
-          </Button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
         <button
           type="button"
-          className={`md:hidden p-1.5 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint ${
-            isScrolled ? "text-ink hover:text-navy" : "text-paper hover:text-paper"
+          className={`nav-toggle md:hidden p-1.5 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint ${
+            isSolid
+              ? "text-ink hover:text-navy"
+              : "text-paper hover:text-paper"
           }`}
           aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMobileMenuOpen}
@@ -149,14 +174,13 @@ export function Nav() {
               {link.label}
             </Link>
           ))}
-          <Button
+          <Link
             href="#demo"
-            variant="outline-light"
-            className="w-full justify-center mt-2"
+            className="inline-flex items-center justify-center font-bold text-sm tracking-[0.01em] px-5 py-2.5 rounded-full border border-navy text-navy hover:bg-navy hover:text-paper transition-[background-color,border-color,color] duration-250 w-full mt-2"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Book a Demo
-          </Button>
+          </Link>
         </div>
       )}
     </header>

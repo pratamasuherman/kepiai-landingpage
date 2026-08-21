@@ -92,13 +92,83 @@ Legal: "© 2026 Kepiai. All rights reserved."
 
 # Copy not yet written
 
-About page has source material from the original wireframe (6-chapter story,
-"Not Just Us" personas in longer form, ends on "Built for 2 a.m.") but needs
-a dedicated pass before implementation — don't invent it inline while
-building components. Flag to the human and draft it as a separate step.
-
 Pricing page: structure is locked (4×3 combination matrix — see AGENTS.md),
-but actual prices are not. Build with placeholder figures in the exact
-format `Rp —.—` per cell, clearly wired to real data later (i.e. don't hardcode
-placeholder strings deep in JSX — pull them from a single typed data object
-so swapping in real numbers is a one-file edit, not a hunt-and-replace).
+but actual prices are not. Built with placeholder figures in the exact
+format `Rp —` per cell, wired through `src/data/pricing.ts` so swapping in
+real numbers is a one-file edit.
+
+---
+
+# Copy — About page (locked)
+
+Source: original wireframe's Section 5, extracted verbatim, with "Kepi.ai"
+renamed to "Kepiai" throughout for consistency with the rest of the site,
+and the Solo Founder line adjusted to gender-neutral phrasing to match the
+homepage's "Who It's For" section (see conversation notes — flagged, not
+silently decided).
+
+## Nav rail (sticky, 6 chapters)
+
+01 — The Pattern
+02 — Not Just Us
+03 — Why Tools Fell Short
+04 — What We Built
+05 — The Name
+06 — Built for 2 a.m.
+
+Rail stays in view while scrolling and highlights the active chapter as the
+reader passes it.
+
+## Intro (above chapter 01)
+
+Heading: "Our Story"
+Line: "The report was due at nine. It was 2 a.m., and we still hadn't started thinking."
+
+## 01 — The Pattern
+
+"That was the pattern. Fourteen tabs open. Instagram Insights exported to CSV, TikTok metrics pasted into column F, a spreadsheet held together by formulas nobody remembered writing. By the time the deck was formatted, the deadline had arrived — and the actual question, the one the client would ask in the meeting, was still unanswered.
+
+We were digital analysts and strategists. We built content frameworks, ran campaign post-mortems, benchmarked competitors for brands that took their numbers seriously. We were good at it. But most of the job wasn't analysis. It was assembly."
+
+Visual placeholder: late desk, laptop glow, half-built deck, 2 a.m. mood (dark/moody — this is a "build a visual" spot, not a stock photo, per AGENTS.md's no-stock-photo stance)
+
+## 02 — Not Just Us
+
+"Then we started noticing the same night happening to people with far fewer resources than us."
+
+**The UMKM Owner** — "In Bandung, closing her shop and opening her phone to figure out why last week's Reel outperformed everything she'd posted in a month — with no analyst to ask, no framework to apply, and no idea which number was the one that mattered."
+
+**The Solo Founder** — "Running the brand's Instagram between operations and inventory, guessing at posting times because guessing was faster than learning a dashboard built for enterprise teams." *(adjusted from original "his own brand's" — see note above)*
+
+**The Brand Manager** — "A small team and a large portfolio, spending Sunday assembling a deck instead of planning the quarter."
+
+Closing line: "Different scale. Identical problem. Everyone was drowning in data nobody had translated for them."
+
+## 03 — Why Tools Fell Short
+
+Heading (in-page): "Why the Tools Fell Short"
+
+"The tools available didn't solve this for either group. They were built to display, and display is the easy half. A dashboard could show engagement down twelve percent. It could not tell you which content pillar caused it, whether your audience had understood the campaign at all, or which competitor had quietly taken the attention you lost. Everything past the number was still manual and everything past the number was the part that mattered. Enterprise platforms buried it under complexity. Simple tools skipped it entirely."
+
+## 04 — What We Built
+
+"So we built the thing we needed, for the people who need it more.
+
+Kepiai unifies Instagram, TikTok, and Facebook into one source of truth, then keeps going where dashboards stop. It reads comment relevance semantically, so you know whether your audience engaged with your message or just typed an emoji. It scores community contribution, so your advocates surface instead of hiding in a like count. It explains video retention by duration and content pillar, so you learn why something held attention. And it exports the whole thing to an editable PowerPoint in your brand colors — the days-long task that used to end our months.
+
+We put analyst-grade thinking inside something a brand owner can open on a Tuesday night and understand immediately."
+
+Visual placeholder: the Kepiai workspace, unified Instagram/TikTok/Facebook view
+Caption: "Not a simplified version of the real tool. The real tool, made legible."
+
+## 05 — The Name
+
+"The name is deliberate. KPI is the acronym our market loses sleep over — whether you're presenting to a client or answering to yourself.
+
+We put a capybara beside it because the capybara sits perfectly still while the river moves around it. Not oblivious. Unthreatened."
+
+## 06 — Built for 2 a.m.
+
+"We built Kepiai for 2 a.m. So nobody has to be there again."
+
+Closing tagline: "Chill. We've got the metrics."

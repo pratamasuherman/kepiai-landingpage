@@ -103,6 +103,59 @@
     background: linear-gradient(90deg, transparent, rgba(122, 128, 190, 0.5), transparent);
   }
 
+  /* ---------- nav ---------- */
+  #nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    transition: background-color 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  }
+  #nav.nav-solid {
+    background: rgba(247, 247, 251, 0.90);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 rgba(20, 21, 43, 0.08);
+    border-bottom: 1px solid rgba(122, 128, 190, 0.15);
+  }
+  #nav a.nav-link {
+    color: var(--paper);
+  }
+  #nav.nav-solid a.nav-link {
+    color: var(--ink);
+  }
+  #nav .nav-logo-word {
+    color: var(--paper);
+  }
+  #nav.nav-solid .nav-logo-word {
+    color: var(--navy);
+  }
+  #nav .nav-cta {
+    border-color: rgba(247, 247, 251, 0.5);
+    color: var(--paper);
+    background: transparent;
+  }
+  #nav .nav-cta:hover {
+    border-color: var(--paper);
+    background: rgba(247, 247, 251, 0.08);
+    color: var(--paper);
+  }
+  #nav.nav-solid .nav-cta {
+    border-color: var(--navy);
+    color: var(--navy);
+    background: transparent;
+  }
+  #nav.nav-solid .nav-cta:hover {
+    background: var(--navy);
+    color: var(--paper);
+  }
+  #nav .nav-toggle {
+    color: var(--paper);
+  }
+  #nav.nav-solid .nav-toggle {
+    color: var(--ink);
+  }
+
   /* ---------- grain texture (dark sections only) ---------- */
   .grain {
     position: absolute;
