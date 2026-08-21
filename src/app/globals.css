@@ -338,6 +338,7 @@
     bottom: 2%;
     right: -2%;
     width: 46%;
+    height: auto;
     opacity: 0.16;
     z-index: 0;
     pointer-events: none;

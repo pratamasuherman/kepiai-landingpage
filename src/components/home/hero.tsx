@@ -155,9 +155,10 @@ export function Hero() {
           <Image
             src="/capybara-mark.png"
             alt=""
-            width={320}
-            height={320}
-            className="capy-still"
+            width={802}
+            height={630}
+            sizes="(min-width: 1280px) 260px, (min-width: 768px) 23vw, 46vw"
+            className="capy-still h-auto"
             priority
           />
 

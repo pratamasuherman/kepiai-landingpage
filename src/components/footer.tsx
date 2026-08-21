@@ -16,8 +16,8 @@ export function Footer() {
               <Image
                 src="/capybara-mark.png"
                 alt=""
-                width={28}
-                height={28}
+                width={802}
+                height={630}
                 className="h-7 w-auto"
               />
               <span className="font-sora font-bold text-navy text-lg">

@@ -7,8 +7,8 @@ export function CapyShowcase() {
         <Image
           src="/capybara-mark.png"
           alt="Kepiai Capybara Mark"
-          width={80}
-          height={80}
+          width={802}
+          height={630}
           className="w-full h-auto"
         />
       </div>

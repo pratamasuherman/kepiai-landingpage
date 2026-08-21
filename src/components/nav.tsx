@@ -70,8 +70,8 @@ export function Nav() {
           <Image
             src="/capybara-mark.png"
             alt=""
-            width={32}
-            height={32}
+            width={802}
+            height={630}
             className="h-8 w-auto"
             priority
           />
